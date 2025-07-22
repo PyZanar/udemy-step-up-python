@@ -1,0 +1,24 @@
+[project]
+name = "udemy-step-up-python"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "nagatomo"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "numpy (==2.3.1)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+black = "^25.1.0"
+ruff = "^0.12.4"
+
+[tool.ruff.lint]
+select = ["E", "F", "N"]
