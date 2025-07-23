@@ -1,6 +1,7 @@
 from datetime import date
 import sys
 import random
+from abc import ABC, abstractmethod
 
 
 FORTUNE_OUTPUT_TEMPLATE = """
@@ -16,42 +17,52 @@ class UserProfile:
         self.name = name
         self.birthday = birthday
 
+        
+class FortuneTeller(ABC):
+    def tell(self, user_profile, today):
+        lucky_color = self._lucky_color(user_profile, today)
+        lucky_number = self._lucky_number(user_profile, today)
 
-class RandomFortuneTeller:
+        return FORTUNE_OUTPUT_TEMPLATE.format(
+            today = today,
+            name = user_profile.name,
+            lucky_color = lucky_color,
+            lucky_number = lucky_number
+        )
+    
+    @abstractmethod
+    def _lucky_color(self, user_profile, today):
+        pass
+
+    @abstractmethod
+    def _lucky_number(self, user_profile, today):
+        pass
+
+
+class RandomFortuneTeller(FortuneTeller):
     def __init__(self, lucky_colors, lucky_numbers):
         self.lucky_colors = lucky_colors
         self.lucky_numbers = lucky_numbers
 
-    def tell(self, user_profile, today):
-        lucky_color = random.choice(self.lucky_colors)
-        lucky_number = random.choice(self.lucky_numbers)
+    def _lucky_color(self, user_profile, today):
+        return random.choice(self.lucky_colors)
 
-        return FORTUNE_OUTPUT_TEMPLATE.format(
-            today = today,
-            name = user_profile.name,
-            lucky_color = lucky_color,
-            lucky_number = lucky_number
-        )
+    def _lucky_number(self, user_profile, today):
+        return random.choice(self.lucky_numbers)
 
-
-class BirthdayBasedFortuneTeller:
-    def tell(self, user_profile, today):
+ 
+class BirthdayBasedFortuneTeller(FortuneTeller):
+    def _lucky_color(self, user_profile, today):
         if user_profile.birthday.month == today.month:
-            lucky_color = "red"
+            return "red"
         else:
-            lucky_color = "blue"
+            return "blue"
 
+    def _lucky_number(self, user_profile, today):
         if user_profile.birthday == today:
-            lucky_number = 777
+            return 777
         else:
-            lucky_number = 0
-
-        return FORTUNE_OUTPUT_TEMPLATE.format(
-            today = today,
-            name = user_profile.name,
-            lucky_color = lucky_color,
-            lucky_number = lucky_number
-        )
+            return 0
 
 
 def get_fortune_teller(fortune_teller_type):
