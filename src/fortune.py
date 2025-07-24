@@ -13,13 +13,13 @@ FORTUNE_OUTPUT_TEMPLATE = """
 
 
 class UserProfile:
-    def __init__(self, name, birthday):
+    def __init__(self, name: str, birthday: date):
         self.name = name
         self.birthday = birthday
 
         
 class FortuneTeller(ABC):
-    def tell(self, user_profile, today):
+    def tell(self, user_profile: UserProfile, today: date) -> str:
         lucky_color = self._lucky_color(user_profile, today)
         lucky_number = self._lucky_number(user_profile, today)
 
@@ -31,41 +31,41 @@ class FortuneTeller(ABC):
         )
     
     @abstractmethod
-    def _lucky_color(self, user_profile, today):
+    def _lucky_color(self, user_profile: UserProfile, today: date) -> str:
         pass
 
     @abstractmethod
-    def _lucky_number(self, user_profile, today):
+    def _lucky_number(self, user_profile: UserProfile, today: date) -> int:
         pass
 
 
 class RandomFortuneTeller(FortuneTeller):
-    def __init__(self, lucky_colors, lucky_numbers):
+    def __init__(self, lucky_colors: list[str], lucky_numbers: list[int]):
         self.lucky_colors = lucky_colors
         self.lucky_numbers = lucky_numbers
 
-    def _lucky_color(self, user_profile, today):
+    def _lucky_color(self, user_profile: UserProfile, today: date) -> str:
         return random.choice(self.lucky_colors)
 
-    def _lucky_number(self, user_profile, today):
+    def _lucky_number(self, user_profile: UserProfile, today: date) -> int:
         return random.choice(self.lucky_numbers)
 
  
 class BirthdayBasedFortuneTeller(FortuneTeller):
-    def _lucky_color(self, user_profile, today):
+    def _lucky_color(self, user_profile: UserProfile, today: date) -> str:
         if user_profile.birthday.month == today.month:
             return "red"
         else:
             return "blue"
 
-    def _lucky_number(self, user_profile, today):
+    def _lucky_number(self, user_profile: UserProfile, today: date) -> int:
         if user_profile.birthday == today:
             return 777
         else:
             return 0
 
 
-def get_fortune_teller(fortune_teller_type):
+def get_fortune_teller(fortune_teller_type: str) -> FortuneTeller:
     if fortune_teller_type == "random":
         lucky_colors = ["red", "green", "blue"]
         lucky_numbers = [1, 2, 3]
